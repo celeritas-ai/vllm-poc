@@ -1,0 +1,74 @@
+{
+  "family": "vllm-poc",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["EC2"],
+  "cpu": "4096",
+  "memory": "16384",
+  "executionRoleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "vllm-poc",
+      "image": "YOUR_ACCOUNT_ID.dkr.ecr.YOUR_REGION.amazonaws.com/vllm-poc:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "MODEL_NAME",
+          "value": "microsoft/DialoGPT-medium"
+        },
+        {
+          "name": "HOST",
+          "value": "0.0.0.0"
+        },
+        {
+          "name": "PORT",
+          "value": "8000"
+        },
+        {
+          "name": "MAX_MODEL_LEN",
+          "value": "2048"
+        },
+        {
+          "name": "GPU_MEMORY_UTILIZATION",
+          "value": "0.9"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/vllm-poc",
+          "awslogs-region": "YOUR_REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8000/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "resourceRequirements": [
+        {
+          "type": "GPU",
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "placementConstraints": [
+    {
+      "type": "memberOf",
+      "expression": "attribute:ecs.instance-type =~ g4dn.*"
+    }
+  ]
+}

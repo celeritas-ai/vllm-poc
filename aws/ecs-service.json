@@ -1,0 +1,45 @@
+{
+  "serviceName": "vllm-poc-service",
+  "cluster": "vllm-poc-cluster",
+  "taskDefinition": "vllm-poc",
+  "desiredCount": 1,
+  "launchType": "EC2",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": [
+        "subnet-YOUR_SUBNET_ID"
+      ],
+      "securityGroups": [
+        "sg-YOUR_SECURITY_GROUP_ID"
+      ],
+      "assignPublicIp": "ENABLED"
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:YOUR_REGION:YOUR_ACCOUNT_ID:targetgroup/vllm-poc-tg/YOUR_TG_ID",
+      "containerName": "vllm-poc",
+      "containerPort": 8000
+    }
+  ],
+  "healthCheckGracePeriodSeconds": 300,
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 50,
+    "deploymentCircuitBreaker": {
+      "enable": true,
+      "rollback": true
+    }
+  },
+  "enableExecuteCommand": true,
+  "tags": [
+    {
+      "key": "Environment",
+      "value": "production"
+    },
+    {
+      "key": "Application",
+      "value": "vllm-poc"
+    }
+  ]
+}

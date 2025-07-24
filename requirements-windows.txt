@@ -1,0 +1,26 @@
+# Windows-specific requirements for vLLM PoC
+
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# PyTorch for Windows
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
+
+# vLLM for Windows
+vllm>=0.2.7
+
+# Core ML dependencies
+transformers>=4.36.0
+tokenizers>=0.15.0
+accelerate>=0.25.0
+
+# System dependencies
+numpy>=1.24.0
+requests>=2.31.0
+psutil>=5.9.0
+
+# Windows-specific optimizations
+colorama>=0.4.6
